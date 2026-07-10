@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<section class="hero-section">
+  <div class="container-xl">
+    <div class="row align-items-center min-vh-80 py-5">
+      <div class="col-lg-6 pe-lg-5">
+        <div class="hero-badge mb-3">
+          <i class="bi bi-robot me-1"></i> Powered by IBM watsonx Orchestrate
+        </div>
+        <h1 class="hero-title">Your AI-Powered<br><span class="text-gradient">Diet & Wellness</span><br>Advisor</h1>
+        <p class="hero-subtitle">
+          Get evidence-based dietary guidance, symptom insights, personalised meal plans,
+          and wellness education — all powered by IBM watsonx AI.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="/chat" class="btn btn-primary btn-lg px-4">
+            <i class="bi bi-chat-dots me-2"></i>Start Chatting
+          </a>
+          <a href="/diseases" class="btn btn-outline-secondary btn-lg px-4">
+            <i class="bi bi-journal-medical me-2"></i>Browse Library
+          </a>
+        </div>
+        <div class="hero-stats mt-5">
+          <div class="stat-item">
+            <span class="stat-number">35</span>
+            <span class="stat-label">Conditions</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">AI</span>
+            <span class="stat-label">Powered</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Available</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5 mt-lg-0">
+        <div class="hero-card-stack">
+          <div class="floating-card card-1">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="card-icon bg-success-subtle">🥗</span>
+              <strong>Diet Guidance</strong>
+            </div>
+            <p class="small text-muted mb-0">Evidence-based nutritional recommendations tailored to health conditions.</p>
+          </div>
+          <div class="floating-card card-2">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="card-icon bg-primary-subtle">🩺</span>
+              <strong>Symptom Checker</strong>
+            </div>
+            <p class="small text-muted mb-0">Understand possible associations between symptoms and conditions.</p>
+          </div>
+          <div class="floating-card card-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="card-icon bg-warning-subtle">📅</span>
+              <strong>Daily Planner</strong>
+            </div>
+            <p class="small text-muted mb-0">Morning to night meal plans structured for your wellness goals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features Grid ──────────────────────────────────────────────────────── -->
+<section class="section-pad bg-surface">
+  <div class="container-xl">
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title">Everything You Need for Wellness</h2>
+      <p class="section-subtitle text-muted">Four integrated tools in one application</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card h-100">
+          <div class="feature-icon">💬</div>
+          <h5>AI Chat Advisor</h5>
+          <p class="text-muted small">Ask anything about nutrition, symptoms, or health conditions. Get structured, knowledge-base-grounded answers.</p>
+          <a href="/chat" class="btn btn-sm btn-outline-primary mt-auto">Open Chat <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card h-100">
+          <div class="feature-icon">📊</div>
+          <h5>Wellness Dashboard</h5>
+          <p class="text-muted small">Track your wellness goals, view health metrics at a glance, and monitor your daily nutrition.</p>
+          <a href="/dashboard" class="btn btn-sm btn-outline-primary mt-auto">View Dashboard <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card h-100">
+          <div class="feature-icon">📚</div>
+          <h5>Disease Library</h5>
+          <p class="text-muted small">Browse 35 physical and mental health conditions with symptoms, diet tips, and precautions.</p>
+          <a href="/diseases" class="btn btn-sm btn-outline-primary mt-auto">Browse Library <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card h-100">
+          <div class="feature-icon">🍽️</div>
+          <h5>Meal Planner</h5>
+          <p class="text-muted small">Generate AI-powered daily meal plans with Morning, Afternoon, Evening, and Night sections.</p>
+          <a href="/planner" class="btn btn-sm btn-outline-primary mt-auto">Plan Meals <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Quick Symptom Check ────────────────────────────────────────────────── -->
+<section class="section-pad">
+  <div class="container-xl">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <h2 class="section-title">Quick Symptom Check</h2>
+        <p class="text-muted mb-4">Describe your symptoms and get possible associated conditions and dietary guidance from our AI advisor.</p>
+        <div class="symptom-checker-widget">
+          <div class="mb-3">
+            <textarea id="homeSymptoms" class="form-control" rows="3" placeholder="e.g. fatigue, joint pain, bloating..."></textarea>
+          </div>
+          <button class="btn btn-primary px-4" id="homeSymptomBtn">
+            <i class="bi bi-search me-2"></i>Check Symptoms
+          </button>
+          <div id="homeSymptomResult" class="mt-3 d-none"></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="condition-tags-cloud">
+          <h6 class="text-muted mb-3">Common Conditions in Our Library</h6>
+          <div class="d-flex flex-wrap gap-2">
+            {% set conditions = ['Diabetes', 'Hypertension', 'Anxiety', 'Depression', 'IBS', 'Thyroid', 'Arthritis', 'Asthma', 'Obesity', 'PCOS', 'Migraine', 'Anemia', 'Insomnia', 'ADHD', 'Eczema', 'Gout'] %}
+            {% for c in conditions %}
+            <a href="/diseases" class="badge-tag">{{ c }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Disclaimer Section ─────────────────────────────────────────────────── -->
+<section class="section-pad bg-surface">
+  <div class="container-xl">
+    <div class="disclaimer-card">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="disclaimer-icon">⚕️</div>
+        <div>
+          <h5 class="mb-2">Medical Disclaimer</h5>
+          <p class="mb-0 text-muted">
+            WellnessAI is for informational purposes only and does not replace professional medical advice.
+            The information provided is based on general wellness knowledge and should not be used for self-diagnosis
+            or self-treatment. Always consult with a licensed healthcare professional before making any changes
+            to your diet, lifestyle, or medical regimen.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('homeSymptomBtn').addEventListener('click', async function() {
+  const symptoms = document.getElementById('homeSymptoms').value.trim();
+  if (!symptoms) return;
+  const btn = this;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking...';
+  const resultEl = document.getElementById('homeSymptomResult');
+  resultEl.classList.add('d-none');
+  try {
+    const resp = await fetch('/api/symptom-check', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({symptoms})
+    });
+    const data = await resp.json();
+    resultEl.innerHTML = `<div class="response-card">${WellnessApp.parseResponse(data.text || data.error || 'No response.')}</div>`;
+    resultEl.classList.remove('d-none');
+  } catch(e) {
+    resultEl.innerHTML = `<div class="alert alert-danger">Error: ${e.message}</div>`;
+    resultEl.classList.remove('d-none');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-search me-2"></i>Check Symptoms';
+  }
+});
+</script>
+{% endblock %}

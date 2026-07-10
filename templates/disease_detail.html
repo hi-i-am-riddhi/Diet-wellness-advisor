@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}{{ disease.name }}{% endblock %}
+
+{% block content %}
+<div class="container-xl py-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/diseases">Disease Library</a></li>
+      <li class="breadcrumb-item active">{{ disease.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- ── Main Content ──────────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div>
+            <span class="disease-badge {{ disease.category }} mb-2 d-inline-block">
+              {% if disease.category == 'mental' %}🧠 Mental Health{% else %}🏥 Physical{% endif %}
+            </span>
+            <h1 class="detail-title">{{ disease.name }}</h1>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              {% for tag in disease.tags %}
+              <span class="tag-chip">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Overview -->
+        <div class="detail-section">
+          <h4 class="detail-section-heading"><i class="bi bi-info-circle me-2"></i>Overview</h4>
+          <p class="lead-text">{{ disease.overview }}</p>
+        </div>
+
+        <!-- Symptoms -->
+        <div class="detail-section">
+          <h4 class="detail-section-heading"><i class="bi bi-activity me-2"></i>Symptoms</h4>
+          <div class="disclaimer-inline mb-2">
+            <i class="bi bi-exclamation-circle me-1"></i>
+            Symptoms <em>may include</em> some or all of the following. Presentations vary between individuals.
+          </div>
+          <ul class="detail-list symptom-list">
+            {% for symptom in disease.symptoms %}
+            <li><i class="bi bi-dot me-1 text-danger"></i>{{ symptom }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Precautions -->
+        <div class="detail-section">
+          <h4 class="detail-section-heading"><i class="bi bi-shield-check me-2"></i>Precautions & Management</h4>
+          <ul class="detail-list precaution-list">
+            {% for p in disease.precautions %}
+            <li><i class="bi bi-check-circle-fill me-2 text-success"></i>{{ p }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Suggested Diet -->
+        <div class="detail-section">
+          <h4 class="detail-section-heading"><i class="bi bi-egg-fried me-2"></i>Suggested Diet</h4>
+          <ul class="detail-list diet-list">
+            {% for item in disease.suggested_diet %}
+            <li><i class="bi bi-leaf-fill me-2 text-success"></i>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Medical Note -->
+        <div class="medical-note-box">
+          <i class="bi bi-heart-pulse-fill me-2 text-danger"></i>
+          <strong>Medical Disclaimer:</strong>
+          This information is for general wellness education only and does not constitute medical advice.
+          Symptoms and dietary needs vary per individual. Always consult a qualified healthcare professional
+          for diagnosis, treatment, and personalised dietary advice.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Sidebar ────────────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+      <!-- Ask AI About This -->
+      <div class="sidebar-card mb-3">
+        <h6 class="sidebar-heading"><i class="bi bi-robot me-2"></i>Ask AI About This</h6>
+        <p class="small text-muted">Get personalised advice from the watsonx AI advisor about {{ disease.name }}.</p>
+        <a href="/chat?q={{ disease.name | urlencode }}" class="btn btn-primary w-100">
+          <i class="bi bi-chat-dots me-2"></i>Chat About {{ disease.name | truncate(20, true, '...') }}
+        </a>
+      </div>
+
+      <!-- Get Meal Plan -->
+      <div class="sidebar-card mb-3">
+        <h6 class="sidebar-heading"><i class="bi bi-calendar3 me-2"></i>Get a Meal Plan</h6>
+        <p class="small text-muted">Generate a daily meal plan tailored for {{ disease.name }}.</p>
+        <a href="/planner?condition={{ disease.name | urlencode }}" class="btn btn-outline-success w-100">
+          <i class="bi bi-egg-fried me-2"></i>Create Meal Plan
+        </a>
+      </div>
+
+      <!-- Quick Facts -->
+      <div class="sidebar-card">
+        <h6 class="sidebar-heading"><i class="bi bi-lightning-fill me-2"></i>Quick Facts</h6>
+        <div class="quick-facts">
+          <div class="fact-row">
+            <span class="fact-label">Category</span>
+            <span class="fact-val">{{ disease.category | capitalize }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-label">Symptoms listed</span>
+            <span class="fact-val">{{ disease.symptoms | length }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-label">Diet tips</span>
+            <span class="fact-val">{{ disease.suggested_diet | length }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-label">Precautions</span>
+            <span class="fact-val">{{ disease.precautions | length }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back link -->
+      <div class="mt-3">
+        <a href="/diseases" class="btn btn-outline-secondary w-100">
+          <i class="bi bi-arrow-left me-2"></i>Back to Library
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Pre-fill chat with disease name if coming from this page
+const params = new URLSearchParams(location.search);
+const q = params.get('q');
+if (q && location.pathname === '/chat') {
+  document.getElementById('chatInput').value = `Tell me about ${q} — symptoms, diet, and precautions.`;
+}
+</script>
+{% endblock %}

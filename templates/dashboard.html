@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}Wellness Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-xl py-4">
+
+  <!-- Page Title -->
+  <div class="page-header mb-4">
+    <h1 class="page-title"><i class="bi bi-speedometer2 me-2"></i>Wellness Dashboard</h1>
+    <p class="text-muted">Your personal health overview and daily wellness tracking</p>
+  </div>
+
+  <!-- ── Wellness Score Cards ─────────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="metric-card">
+        <div class="metric-icon bg-success-subtle text-success">💧</div>
+        <div class="metric-value" id="waterVal">0</div>
+        <div class="metric-label">Glasses of Water</div>
+        <div class="metric-target">Goal: 8 glasses</div>
+        <div class="progress mt-2" style="height:4px">
+          <div class="progress-bar bg-success" id="waterProgress" style="width:0%"></div>
+        </div>
+        <button class="btn btn-xs btn-outline-success mt-2 w-100" onclick="incrementMetric('water')">+ Add Glass</button>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="metric-card">
+        <div class="metric-icon bg-warning-subtle text-warning">🏃</div>
+        <div class="metric-value" id="exerciseVal">0</div>
+        <div class="metric-label">Exercise (min)</div>
+        <div class="metric-target">Goal: 30 min</div>
+        <div class="progress mt-2" style="height:4px">
+          <div class="progress-bar bg-warning" id="exerciseProgress" style="width:0%"></div>
+        </div>
+        <button class="btn btn-xs btn-outline-warning mt-2 w-100" onclick="incrementMetric('exercise')">+ 10 min</button>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="metric-card">
+        <div class="metric-icon bg-info-subtle text-info">😴</div>
+        <div class="metric-value" id="sleepVal">0</div>
+        <div class="metric-label">Sleep (hours)</div>
+        <div class="metric-target">Goal: 8 hours</div>
+        <div class="progress mt-2" style="height:4px">
+          <div class="progress-bar bg-info" id="sleepProgress" style="width:0%"></div>
+        </div>
+        <button class="btn btn-xs btn-outline-info mt-2 w-100" onclick="incrementMetric('sleep')">+ 1 hour</button>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="metric-card">
+        <div class="metric-icon bg-danger-subtle text-danger">🍎</div>
+        <div class="metric-value" id="fruitsVal">0</div>
+        <div class="metric-label">Fruit Servings</div>
+        <div class="metric-target">Goal: 5 servings</div>
+        <div class="progress mt-2" style="height:4px">
+          <div class="progress-bar bg-danger" id="fruitsProgress" style="width:0%"></div>
+        </div>
+        <button class="btn btn-xs btn-outline-danger mt-2 w-100" onclick="incrementMetric('fruits')">+ Serving</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- ── BMI Calculator ──────────────────────────────────────────────────── -->
+    <div class="col-lg-5">
+      <div class="dashboard-card h-100">
+        <div class="dashboard-card-header">
+          <h5><i class="bi bi-calculator me-2"></i>BMI Calculator</h5>
+        </div>
+        <div class="dashboard-card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-semibold">Height (cm)</label>
+              <input type="number" id="bmiHeight" class="form-control" placeholder="170" min="100" max="250" />
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-semibold">Weight (kg)</label>
+              <input type="number" id="bmiWeight" class="form-control" placeholder="70" min="30" max="300" />
+            </div>
+          </div>
+          <button class="btn btn-primary w-100" onclick="calculateBMI()">Calculate BMI</button>
+          <div id="bmiResult" class="bmi-result mt-3 d-none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Nutrition Plate ────────────────────────────────────────────────── -->
+    <div class="col-lg-7">
+      <div class="dashboard-card h-100">
+        <div class="dashboard-card-header">
+          <h5><i class="bi bi-pie-chart me-2"></i>Balanced Plate Guide</h5>
+        </div>
+        <div class="dashboard-card-body">
+          <div class="plate-guide">
+            <div class="plate-visual">
+              <div class="plate-circle">
+                <div class="plate-segment seg-veggies" title="Vegetables 50%">50%<br><small>Veggies</small></div>
+              </div>
+            </div>
+            <div class="plate-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#4ade80"></span>
+                <span><strong>50%</strong> Vegetables & Fruits</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#facc15"></span>
+                <span><strong>25%</strong> Whole Grains</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#60a5fa"></span>
+                <span><strong>25%</strong> Lean Protein</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#a78bfa"></span>
+                <span><strong>+</strong> Healthy Fats (small)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#38bdf8"></span>
+                <span><strong>+</strong> Water (8 glasses/day)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Daily Wellness Tips ─────────────────────────────────────────────── -->
+    <div class="col-lg-6">
+      <div class="dashboard-card">
+        <div class="dashboard-card-header">
+          <h5><i class="bi bi-lightbulb me-2"></i>Daily Wellness Tips</h5>
+        </div>
+        <div class="dashboard-card-body" id="wellnessTips">
+          <div class="tip-item">
+            <span class="tip-icon">🌅</span>
+            <div><strong>Morning Ritual:</strong> Start with a glass of warm water with lemon to aid digestion and hydration.</div>
+          </div>
+          <div class="tip-item">
+            <span class="tip-icon">🥗</span>
+            <div><strong>Eat the Rainbow:</strong> Aim for 5 different coloured vegetables and fruits daily for micronutrients.</div>
+          </div>
+          <div class="tip-item">
+            <span class="tip-icon">🧘</span>
+            <div><strong>Mindful Eating:</strong> Chew slowly, avoid screens during meals, and stop when 80% full.</div>
+          </div>
+          <div class="tip-item">
+            <span class="tip-icon">💤</span>
+            <div><strong>Sleep Hygiene:</strong> Consistent sleep and wake times support metabolic health and hormone balance.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Macronutrient Tracker ────────────────────────────────────────────── -->
+    <div class="col-lg-6">
+      <div class="dashboard-card">
+        <div class="dashboard-card-header">
+          <h5><i class="bi bi-bar-chart me-2"></i>Today's Macros</h5>
+        </div>
+        <div class="dashboard-card-body">
+          <div class="macro-bars">
+            <div class="macro-item mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="fw-semibold small">🍞 Carbohydrates</span>
+                <span id="carbsText" class="small text-muted">0 / 250g</span>
+              </div>
+              <div class="progress" style="height:8px">
+                <div class="progress-bar bg-warning" id="carbsBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="macro-item mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="fw-semibold small">🥩 Protein</span>
+                <span id="proteinText" class="small text-muted">0 / 60g</span>
+              </div>
+              <div class="progress" style="height:8px">
+                <div class="progress-bar bg-primary" id="proteinBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="macro-item mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="fw-semibold small">🥑 Fats</span>
+                <span id="fatsText" class="small text-muted">0 / 65g</span>
+              </div>
+              <div class="progress" style="height:8px">
+                <div class="progress-bar bg-success" id="fatsBar" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="col-4"><button class="btn btn-xs btn-outline-warning w-100" onclick="addMacro('carbs', 30)">+Carbs</button></div>
+            <div class="col-4"><button class="btn btn-xs btn-outline-primary w-100" onclick="addMacro('protein', 20)">+Protein</button></div>
+            <div class="col-4"><button class="btn btn-xs btn-outline-success w-100" onclick="addMacro('fats', 10)">+Fats</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</div><!-- /container -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// ── Dashboard JS ──────────────────────────────────────────────────────────────
+const metrics = {water:{val:0,goal:8,id:'water'}, exercise:{val:0,goal:30,id:'exercise'}, sleep:{val:0,goal:8,id:'sleep'}, fruits:{val:0,goal:5,id:'fruits'}};
+const macros = {carbs:{val:0,goal:250}, protein:{val:0,goal:60}, fats:{val:0,goal:65}};
+
+function incrementMetric(key) {
+  const step = {water:1, exercise:10, sleep:1, fruits:1}[key];
+  metrics[key].val = Math.min(metrics[key].val + step, metrics[key].goal * 1.5);
+  updateMetricUI(key);
+}
+function updateMetricUI(key) {
+  const m = metrics[key];
+  document.getElementById(`${key}Val`).textContent = m.val;
+  const pct = Math.min((m.val / m.goal) * 100, 100);
+  document.getElementById(`${key}Progress`).style.width = pct + '%';
+}
+
+function addMacro(key, amount) {
+  macros[key].val = Math.min(macros[key].val + amount, macros[key].goal * 1.5);
+  updateMacroUI(key);
+}
+function updateMacroUI(key) {
+  const m = macros[key];
+  document.getElementById(`${key}Text`).textContent = `${m.val} / ${m.goal}g`;
+  document.getElementById(`${key}Bar`).style.width = Math.min((m.val/m.goal)*100, 100) + '%';
+}
+
+function calculateBMI() {
+  const h = parseFloat(document.getElementById('bmiHeight').value);
+  const w = parseFloat(document.getElementById('bmiWeight').value);
+  const resultEl = document.getElementById('bmiResult');
+  if (!h || !w || h < 100 || w < 30) {
+    resultEl.innerHTML = '<div class="alert alert-warning">Please enter valid height (100-250 cm) and weight (30-300 kg).</div>';
+    resultEl.classList.remove('d-none'); return;
+  }
+  const bmi = (w / ((h/100) ** 2)).toFixed(1);
+  let cat, cls, advice;
+  if (bmi < 18.5)      { cat='Underweight'; cls='info'; advice='Consider increasing caloric intake with nutrient-dense foods.'; }
+  else if (bmi < 25)   { cat='Normal Weight'; cls='success'; advice='Maintain a balanced diet and regular physical activity.'; }
+  else if (bmi < 30)   { cat='Overweight'; cls='warning'; advice='Focus on whole foods, reduce refined carbs, and increase activity.'; }
+  else                 { cat='Obese'; cls='danger'; advice='Consult a healthcare professional for a personalised plan.'; }
+  resultEl.innerHTML = `
+    <div class="bmi-score-display">
+      <div class="bmi-number text-${cls}">${bmi}</div>
+      <div class="bmi-category badge bg-${cls}-subtle text-${cls}">${cat}</div>
+    </div>
+    <p class="small mt-2 mb-0 text-muted">${advice}</p>
+    <p class="small text-muted mt-1"><em>⚕ BMI is a screening tool, not a diagnostic measure. Consult a doctor.</em></p>`;
+  resultEl.classList.remove('d-none');
+}
+</script>
+{% endblock %}

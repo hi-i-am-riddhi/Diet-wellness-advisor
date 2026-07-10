@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Disease Library{% endblock %}
+
+{% block content %}
+<div class="container-xl py-4">
+
+  <div class="page-header mb-4">
+    <h1 class="page-title"><i class="bi bi-journal-medical me-2"></i>Disease & Condition Library</h1>
+    <p class="text-muted">Browse 35 physical and mental health conditions with diet guidance, symptoms, and precautions.</p>
+  </div>
+
+  <!-- ── Search & Filter Bar ──────────────────────────────────────────────── -->
+  <div class="search-bar-row mb-4">
+    <div class="search-input-wrapper flex-grow-1">
+      <i class="bi bi-search search-icon-inner"></i>
+      <input type="search" id="diseaseSearch" class="form-control search-input" placeholder="Search conditions, symptoms, tags..." />
+    </div>
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">All ({{ diseases|length }})</button>
+      <button class="filter-btn" data-filter="physical">Physical ({{ categories.physical|length }})</button>
+      <button class="filter-btn" data-filter="mental">Mental Health ({{ categories.mental|length }})</button>
+    </div>
+  </div>
+
+  <!-- ── Disease Cards Grid ─────────────────────────────────────────────── -->
+  <div id="diseaseGrid" class="row g-3">
+    {% for disease in diseases %}
+    <div class="col-sm-6 col-lg-4 disease-card-wrapper"
+         data-category="{{ disease.category }}"
+         data-name="{{ disease.name | lower }}"
+         data-tags="{{ disease.tags | join(' ') | lower }}"
+         data-overview="{{ disease.overview | lower }}">
+      <a href="/disease/{{ disease.id }}" class="text-decoration-none">
+        <div class="disease-card h-100">
+          <div class="disease-card-header">
+            <span class="disease-badge {{ disease.category }}">
+              {% if disease.category == 'mental' %}🧠 Mental Health{% else %}🏥 Physical{% endif %}
+            </span>
+            <span class="disease-arrow"><i class="bi bi-arrow-right"></i></span>
+          </div>
+          <h6 class="disease-name">{{ disease.name }}</h6>
+          <p class="disease-overview text-muted small">{{ disease.overview | truncate(100) }}</p>
+          <div class="disease-tags">
+            {% for tag in disease.tags[:3] %}
+            <span class="tag-chip">{{ tag }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- No results message -->
+  <div id="noResults" class="text-center py-5 d-none">
+    <div class="empty-state-icon">🔍</div>
+    <h5>No conditions found</h5>
+    <p class="text-muted">Try different keywords or clear the search.</p>
+    <button class="btn btn-outline-primary" onclick="clearSearch()">Clear Search</button>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const cards      = document.querySelectorAll('.disease-card-wrapper');
+const searchInput = document.getElementById('diseaseSearch');
+const filterBtns  = document.querySelectorAll('.filter-btn');
+const noResults   = document.getElementById('noResults');
+let currentFilter = 'all';
+
+function filterCards() {
+  const query = searchInput.value.toLowerCase();
+  let visible = 0;
+  cards.forEach(card => {
+    const matchesFilter = currentFilter === 'all' || card.dataset.category === currentFilter;
+    const matchesSearch = !query ||
+      card.dataset.name.includes(query) ||
+      card.dataset.tags.includes(query) ||
+      card.dataset.overview.includes(query);
+    if (matchesFilter && matchesSearch) {
+      card.style.display = '';
+      visible++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  noResults.classList.toggle('d-none', visible > 0);
+}
+
+searchInput.addEventListener('input', filterCards);
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    filterCards();
+  });
+});
+
+function clearSearch() {
+  searchInput.value = '';
+  currentFilter = 'all';
+  filterBtns.forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+  filterCards();
+}
+</script>
+{% endblock %}
